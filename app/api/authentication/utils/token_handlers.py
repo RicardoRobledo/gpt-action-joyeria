@@ -40,8 +40,8 @@ def create_tokens(token:str):
         "username": decoded_token['username'],
     }
 
-    access_token = jwt.encode({**payload, 'exp':datetime.now()+timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_)}, config.SECRET_KEY, algorithm=config.HASH_ALGORITHM)
-    refresh_token = jwt.encode({**payload, 'exp':datetime.now()+timedelta(minutes=config.REFRESH_TOKEN_EXPIRE_)}, config.SECRET_KEY, algorithm=config.HASH_ALGORITHM)
+    access_token = jwt.encode({**payload, 'exp':datetime.now()+timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_SECONDS)}, config.SECRET_KEY, algorithm=config.HASH_ALGORITHM)
+    refresh_token = jwt.encode({**payload, 'exp':datetime.now()+timedelta(minutes=config.REFRESH_TOKEN_EXPIRE_SECONDS)}, config.SECRET_KEY, algorithm=config.HASH_ALGORITHM)
 
     return access_token, refresh_token
 
