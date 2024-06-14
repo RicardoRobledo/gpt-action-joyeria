@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>Login</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/user-login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form id="login-form">
+        <p><img width="100px" height="100px" class="rounded-image"></p>
+
+        <p><label for="username">Username</label></p>
+        <input type="text" placeholder="Username" id="username" maxlength="40" required>
+
+        <p><label for="password">Password</label></p>
+        <input type="password" placeholder="Password" id="password" maxlength="40" required>
+
+        <label id="message">Error, usuario y/o contraseña incorrectos</label>
+        <button type="submit" id="login">Log In</button>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            $('#login-form').submit(function (event) {
+                event.preventDefault();
+                login();
+            });
+
+            function login() {
+
+                const username = $('#username').val();
+                const password = $('#password').val();
+
+                fetch('https://gpt-action-joyeria.onrender.com/api/v1/authentication/oauth/authorize', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                }).then(response =>{
+
+                    if(response.status===200) {
+                        return response.json()
+                    }else{
+                        $('#message').show().delay(3000).fadeOut();
+                    }
+                    
+                }).then(data =>{
+                    redirect(data['code']);
+                }).catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('response').innerText = 'An error occurred';
+                });
+
+            }
+
+            function redirect(code) {
+                const urlParams = new URLSearchParams(window.location.search);
+
+                urlParams.set('code', code);
+
+                window.location.href = {{ callback_url | tojson }} + '?' + urlParams.toString();
+            }
+
+        });
+    </script>
+</body>
+
+</html>
